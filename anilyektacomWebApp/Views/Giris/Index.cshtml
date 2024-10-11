@@ -1,0 +1,67 @@
+﻿@page
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>test.anilyekta Giriş </title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition lockscreen dark-mode">
+    <!-- Automatic element centering -->
+    <div class="lockscreen-wrapper">
+
+        <!-- START LOCK SCREEN ITEM -->
+        <div class="lockscreen-item">
+            <!-- lockscreen image -->
+            <div class="lockscreen-image">
+                <img src="~/Content/dist/img/CTXMonLogo.png" alt="User Image">
+            </div>
+            <!-- /.lockscreen-image -->
+            <!-- lockscreen credentials (contains the form) -->
+            <form class="lockscreen-credentials" action="/Giris/Index" method="post">
+                <input type="text" autocomplete="username" class="form-control sr-only" placeholder="Username" id="username" name="username" aria-label="Username">
+
+                <div class="input-group">
+                    <input type="password" autocomplete="current-password" class="form-control" placeholder="Pin" id="password" name="password">
+
+                    <div data-lastpass-icon-root="" style="position: relative !important; height: 0px !important; width: 0px !important; float: left !important;"></div>
+
+                    <div class="input-group-append">
+                        <button type="submit" class="btn">
+                            <i class="fas fa-arrow-right text-muted"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- /.lockscreen credentials -->
+        </div>
+        @if (!string.IsNullOrEmpty(Accessor.HttpContext.Session.GetString("pin")) && Accessor.HttpContext.Session.GetString("pin") == "yanlis")
+        {
+            <div class="help-block text-center" style="color:azure;">
+                Tekrar deneyiniz..
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Accessor.HttpContext.Session.GetString("pin")) && Accessor.HttpContext.Session.GetString("pin") == "cikis")
+        {
+            <div class="help-block text-center" style="color:azure;">
+                Çıkış işlemi başarılı..
+            </div>
+        }
+    </div>
+    <!-- /.center -->
+    <!-- jQuery -->
+    <script src="~/Content/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->  
+    <script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

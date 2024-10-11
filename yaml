@@ -1,0 +1,42 @@
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
+
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**\*.sln'
+    arguments: '--configuration $(BuildConfiguration) -p:PackageAsSingleFile=true -p:PackageLocation="$(build.artifactStagingDirectory)"'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--output $(Build.ArtifactStagingDirectory) --configuration $(BuildConfiguration)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+      $headers.Add("Content-Type", "application/json")
+      $headers.Add("Accept", "application/json")
+      $headers.Add("Authorization", "JWT $(probely.token)")
+      
+      $body = @{
+          "ignore_blackout_period" = $true
+          "scan_profile" = "lightning"
+      } | ConvertTo-Json
+      
+      $response = Invoke-RestMethod -Uri 'https://api.probely.com/targets/2UzCPcUhqhi7/scan_now/' -Method 'POST' -Headers $headers -Body $body
+      $response | ConvertTo-Json
