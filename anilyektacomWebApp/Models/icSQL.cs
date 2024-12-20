@@ -61,8 +61,9 @@ namespace anilyektacomWebApp.Models
                 }
                 else
                 {
-                    string query = "SELECT COUNT(*) FROM Kullanicilar WHERE pin = '" + password + "'";
+                    string query = "SELECT COUNT(*) FROM Kullanicilar WHERE pin = @password";
                     SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@password", password);
                     try
                     {
                         result = (int)command.ExecuteScalar();
